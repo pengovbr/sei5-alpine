@@ -23,6 +23,7 @@ jobs:
           images: |
             processoeletronico/sei5-alpine
           tags: |
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=pep440,pattern={{major}}.{{minor}}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
