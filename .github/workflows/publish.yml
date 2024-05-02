@@ -8,12 +8,22 @@ on:
       - 'Dockerfile'
       - 'assets/**'
       - '.github/workflows/publish.yml'
+  tags:
+    - "*.*.*"
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            processoeletronico/sei5-alpine
+          tags: |
+            type=pep440,pattern={{major}}.{{minor}}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -28,4 +38,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: processoeletronico/sei5-alpine:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
