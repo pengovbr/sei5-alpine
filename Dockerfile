@@ -3,6 +3,9 @@
 ################################################################################
 
 FROM alpine:3.19
+
+LABEL \
+    org.opencontainers.image.title=Imagem docker para SEI 5 em PHP82
  
 RUN apk add --no-cache \
       apache2 \ 
