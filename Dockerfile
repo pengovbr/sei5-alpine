@@ -89,7 +89,7 @@ COPY assets/cron.conf /tmp/cron.conf
 RUN  cat /tmp/cron.conf >> /etc/crontabs/root 
 
 # Pasta para arquivos externos
-RUN mkdir -p /var/sei/arquivos && chown -R apache.apache /var/sei/arquivos && chown 777 /tmp
+RUN mkdir -p /var/sei/arquivos && chown -R apache.apache /var/sei/arquivos && chmod 777 /tmp
 
 RUN mkdir -p /var/log/sei && mkdir -p /var/log/sip
 # Suporte para atualização do SEI. O script de atualização do SEI está fixo no bash
