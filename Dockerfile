@@ -95,6 +95,10 @@ RUN mkdir -p /var/log/sei && mkdir -p /var/log/sip
 # Suporte para atualização do SEI. O script de atualização do SEI está fixo no bash
 RUN apk add --no-cache \
     bash curl;
+
+COPY assets/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
         
-EXPOSE 80
-CMD ["sh", "-c", "crond && httpd -DFOREGROUND"]
+EXPOSE 8000
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/bin/sh", "-c", "crond && httpd -DFOREGROUND"]
