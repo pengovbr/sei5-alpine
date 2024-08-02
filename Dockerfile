@@ -2,7 +2,7 @@
 # Dockerfile de construcao do container APP com os pacotes basicos
 ################################################################################
 
-FROM alpine:3.19
+FROM alpine:3.20
 
 LABEL \
     org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"
@@ -97,7 +97,7 @@ RUN apk add --no-cache \
     bash curl;
 
 COPY assets/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php
         
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
