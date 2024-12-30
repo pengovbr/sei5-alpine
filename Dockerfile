@@ -77,7 +77,7 @@ RUN apk add --no-cache \
   && apk del .build-deps
 
 # wkhtmltopdf #
-COPY --from=surnet/alpine-wkhtmltopdf:3.19.1-0.12.6-small \
+COPY --from=surnet/alpine-wkhtmltopdf:3.20.3-0.12.6-small \
     /bin/wkhtmltopdf /bin/wkhtmltopdf
 
 RUN apk add --no-cache openjdk8
@@ -85,8 +85,7 @@ RUN apk add --no-cache openjdk8
 COPY assets/sei.ini /etc/php82/conf.d/99_sei.ini
 COPY assets/xdebug.ini /etc/php82/conf.d/99_xdebug.ini
 COPY assets/sei.conf /etc/apache2/conf.d/
-COPY assets/cron.conf /tmp/cron.conf
-RUN  cat /tmp/cron.conf >> /etc/crontabs/root 
+COPY assets/cron.conf /etc/crontabs/apache
 
 # Pasta para arquivos externos
 RUN mkdir -p /var/sei/arquivos && chown -R apache:apache /var/sei/arquivos && chmod 777 /tmp
