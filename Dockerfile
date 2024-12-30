@@ -95,6 +95,10 @@ RUN mkdir -p /var/log/sei && mkdir -p /var/log/sip
 RUN apk add --no-cache \
     bash curl;
 
+# Suporte para módulo de assinatura avançada
+RUN apk add --no-cache \
+    php82-tokenizer php82-xmlwriter;
+
 COPY assets/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php
         
