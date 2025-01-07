@@ -87,7 +87,7 @@ RUN apk add --no-cache openjdk8
 COPY assets/sei.ini /etc/php82/conf.d/99_sei.ini
 COPY assets/xdebug.ini /etc/php82/conf.d/99_xdebug.ini
 COPY assets/sei.conf /etc/apache2/conf.d/
-COPY assets/cron.conf /etc/crontabs/apache
+COPY assets/cron.conf /etc/crontabs/root
 
 # Pasta para arquivos externos
 RUN mkdir -p /var/sei/arquivos && chown -R apache:apache /var/sei/arquivos && chmod 777 /tmp
