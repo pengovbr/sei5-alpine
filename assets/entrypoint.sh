@@ -4,6 +4,7 @@ mkdir -p /opt/sei/temp
 mkdir -p /opt/sip/temp
 chmod 777 /opt/sei/temp
 chmod 777 /opt/sip/temp
+chown -R apache:apache /var/sei/arquivos
 
 # Atualização do endereço de host da aplicação
 HOST_URL=${HOST_URL:-"http://localhost:8000"}
