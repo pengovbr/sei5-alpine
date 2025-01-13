@@ -101,6 +101,9 @@ RUN apk add --no-cache \
 RUN apk add --no-cache \
     php82-tokenizer php82-xmlwriter;
 
+# Geração de audio do captcha
+# RUN apk add --no-cache ffmpeg;
+
 COPY assets/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php
         
