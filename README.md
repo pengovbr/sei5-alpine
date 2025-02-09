@@ -2,8 +2,8 @@
 
 Imagem docker para SEI 5 no PHP82 no Alpine - Versão DEV
 
-Essa imagem serve somente para MySQL, MariaDB e Postgres.
+Essa imagem serve somente para MySQL, MariaDB, Postgres e Oracle.
 
-Bancos de oracle e sqlserver não tem suporte.
+Bancos sqlserver não tem suporte.
 
 

@@ -6,11 +6,15 @@ FROM alpine:3.21
 
 LABEL \
     org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"
- 
+
+
+COPY src/ /opt/
+
 RUN apk add --no-cache \
       apache2 \ 
       apache2-http2 \
       gnu-libiconv \
+      php82 \
       php82-apache2 \
       php82-bcmath \
       php82-bz2 \
@@ -81,6 +85,24 @@ RUN apk add --no-cache \
 # wkhtmltopdf #
 COPY --from=surnet/alpine-wkhtmltopdf:3.20.3-0.12.6-small \
     /bin/wkhtmltopdf /bin/wkhtmltopdf
+
+## Add suporte ao Oracle
+COPY assets/instantclient-basic-linux.x64-21.11.0.0.0dbru.zip /tmp/
+COPY assets/instantclient-sdk-linux.x64-21.11.0.0.0dbru.zip /tmp/
+COPY assets/oci8-3.3.0.tgz /tmp/
+COPY assets/install_oci8.sh /tmp/install_oci8.sh
+
+RUN mkdir -p /opt/oracle/ && \ 
+    unzip /tmp/instantclient-basic-linux.x64-21.11.0.0.0dbru.zip -d /opt/oracle \
+    && unzip /tmp/instantclient-sdk-linux.x64-21.11.0.0.0dbru.zip -d /opt/oracle \
+    && rm -rf /tmp/*.zip \
+    && mv /opt/oracle/instantclient_21_11 /opt/oracle/instantclient
+
+ENV LD_LIBRARY_PATH="/opt/oracle/instantclient"
+ENV ORACLE_HOME="/opt/oracle/instantclient/"
+
+RUN chmod +x /tmp/install_oci8.sh && /tmp/install_oci8.sh
+RUN rm -rf /tmp/install_oci8.sh
 
 RUN apk add --no-cache openjdk8
 
