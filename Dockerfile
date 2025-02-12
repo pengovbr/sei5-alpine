@@ -7,9 +7,6 @@ FROM alpine:3.21
 LABEL \
     org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"
 
-
-COPY src/ /opt/
-
 RUN apk add --no-cache \
       apache2 \ 
       apache2-http2 \
