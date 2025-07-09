@@ -79,7 +79,7 @@ RUN apk add --no-cache \
   && apk del .build-deps
 
 # wkhtmltopdf #
-COPY --from=surnet/alpine-wkhtmltopdf:3.21.3-0.12.6-small \
+COPY --from=surnet/alpine-wkhtmltopdf:3.22.0-0.12.6-small \
     /bin/wkhtmltopdf /bin/wkhtmltopdf
 
 RUN apk add --no-cache openjdk8
