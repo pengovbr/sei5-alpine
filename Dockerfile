@@ -1,5 +1,5 @@
 ##############################################################################
-# Dockerfile de construcao do container APP com os pacotes basicos
+# Dockerfile de construcao do container APP com os pacotes basicos 
 ##############################################################################
 
 FROM alpine:3.22
