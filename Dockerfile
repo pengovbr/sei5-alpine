@@ -6,11 +6,18 @@ FROM alpine:3.22
 
 LABEL \
     org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"
- 
+
+# Erro do iconv com musl ASCII//TRANSLIT
+# https://github.com/docker-library/php/issues/1495
+RUN apk add --no-cache \
+    --repository http://dl-cdn.alpinelinux.org/alpine/v3.12/community/ \
+    gnu-libiconv=1.15-r2;
+
+ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
+
 RUN apk add --no-cache \
       apache2 \ 
       apache2-http2 \
-      gnu-libiconv \
       php82-apache2 \
       php82-bcmath \
       php82-bz2 \
