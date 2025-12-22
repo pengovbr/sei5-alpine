@@ -44,11 +44,10 @@ jobs:
       - name: Docker Scout
         uses: docker/scout-action@v1.18.2
         with:
-          command: cves,recommendations,compare
+          command: cves,recommendations
           to-latest: true
           ignore-base: true
           ignore-unchanged: true
-          organization: processoeletronico
           sarif-file: sarif.output.json
           summary: true
       - name: Upload SARIF result
