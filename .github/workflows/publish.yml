@@ -45,8 +45,7 @@ jobs:
         uses: docker/scout-action@v1.18.2
         with:
           command: cves,recommendations
-          image: sei5-alpine
-          organization: processoeletronico
+          image: processoeletronico/sei5-alpine
           to-latest: true
           ignore-base: true
           ignore-unchanged: true
