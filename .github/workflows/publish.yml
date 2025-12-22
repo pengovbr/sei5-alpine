@@ -41,3 +41,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Docker Scout
+        uses: docker/scout-action@v1.18.2
+        with:
+          command: cves,recommendations,compare
+          to-latest: true
+          ignore-base: true
+          ignore-unchanged: true
