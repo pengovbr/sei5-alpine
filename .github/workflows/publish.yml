@@ -15,12 +15,12 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     strategy:
-    matrix:
-      include:
-        - image: pengovbr/sei5-alpine
-          dockerfile: Dockerfile
-        - image: pengovbr/se5-alpine-oracle
-          dockerfile: Dockerfile-oracle
+      matrix:
+        include:
+          - image: pengovbr/sei5-alpine
+            dockerfile: Dockerfile
+          - image: pengovbr/se5-alpine-oracle
+            dockerfile: Dockerfile-oracle
     steps:
       - name: Checkout
         uses: actions/checkout@v4
