@@ -130,8 +130,8 @@ RUN chmod +x /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php
 #    && apk del .build-deps \
 #    && echo 'extension=sqlsrv.so' > /etc/php82/conf.d/98_sqlserver.ini \
 #    && echo 'extension=pdo_sqlsrv.so' > /etc/php82/conf.d/99_sqlserver.ini
-ENV ORACLE_HOME /usr/lib/instantclient
-ENV LD_LIBRARY_PATH /usr/lib/instantclient
+ENV ORACLE_HOME=/usr/lib/instantclient
+ENV LD_LIBRARY_PATH=/usr/lib/instantclient
 
 RUN apk --no-cache add libaio libnsl libc6-compat curl make php82-pear php82-dev gcc musl-dev && \
     cd /tmp && \
