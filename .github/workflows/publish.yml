@@ -13,6 +13,13 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    strategy:
+    matrix:
+    include:
+      - image: pengovbr/sei5-alpine
+        dockerfile: Dockerfile
+      - image: pengovbr/se5-alpine-oracle
+        dockerfile: Dockerfile-oracle
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,8 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: |
-            processoeletronico/sei5-alpine
+          images: ${{ matrix.image }}
           tags: |
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=pep440,pattern={{major}}.{{minor}}
@@ -38,6 +44,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ${{ matrix.dockerfile }}
           sbom: true
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -46,7 +53,7 @@ jobs:
         uses: docker/scout-action@v1.18.2
         with:
           command: cves,recommendations
-          image: processoeletronico/sei5-alpine
+          image: ${{ matrix.image }}
           to-latest: true
           ignore-base: true
           ignore-unchanged: true
