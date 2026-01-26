@@ -19,7 +19,7 @@ jobs:
         include:
           - image: processoeletronico/sei5-alpine
             dockerfile: Dockerfile
-          - image: processoeletronico/se5-alpine-oracle
+          - image: processoeletronico/sei5-alpine-oracle
             dockerfile: Dockerfile-oracle
     steps:
       - name: Checkout
