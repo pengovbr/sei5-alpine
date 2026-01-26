@@ -20,3 +20,12 @@ jobs:
         repository: processoeletronico/sei5-alpine
         short-description: ${{ github.event.repository.description }}
         enable-url-completion: true
+
+    - name: Docker Hub Description Oracle
+      uses: peter-evans/dockerhub-description@v4
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        repository: processoeletronico/sei5-alpine-oracle
+        short-description: ${{ github.event.repository.description }}
+        enable-url-completion: true
