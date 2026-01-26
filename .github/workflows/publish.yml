@@ -17,9 +17,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: pengovbr/sei5-alpine
+          - image: processoeletronico/sei5-alpine
             dockerfile: Dockerfile
-          - image: pengovbr/se5-alpine-oracle
+          - image: processoeletronico/se5-alpine-oracle
             dockerfile: Dockerfile-oracle
     steps:
       - name: Checkout
