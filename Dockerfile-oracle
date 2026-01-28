@@ -2,7 +2,7 @@
 # Dockerfile de construcao do container APP com os pacotes basicos 
 ##############################################################################
 
-FROM alpine:3.22.2
+FROM alpine:3.22.3
 
 LABEL \
     org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"
