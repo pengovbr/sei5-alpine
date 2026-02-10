@@ -16,9 +16,9 @@ RUN apk add --no-cache \
 ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 
 RUN apk add --no-cache \
-      apache2 \ 
+      apache2 \
       apache2-http2 \
-      php82-apache2 \
+      apache2-proxy \
       php82-bcmath \
       php82-bz2 \
       php82-calendar \
@@ -27,6 +27,7 @@ RUN apk add --no-cache \
       php82-dom \
       php82-exif \
       php82-fileinfo \
+      php82-fpm \
       php82-gd \
       php82-gettext \
       php82-gmp \
@@ -112,7 +113,11 @@ RUN apk add --no-cache \
 # RUN apk add --no-cache ffmpeg;
 
 COPY assets/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php
+RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php ; \
+    mkdir -p /var/www/html; \
+    mkdir -p /opt/sei/temp; mkdir -p /opt/sip/temp; \
+    chown apache:apache /var/www/logs/ ; chown apache:apache /var/log/php82/; \
+    echo 'ServerName localhost:80' >> /etc/apache2/httpd.conf; echo 'PidFile /tmp/httpd.pid' >> /etc/apache2/httpd.conf
 
 # Permite o uso do SQLSERVER mas não funciona corretamente devido ao requisito de iso88591 do SEI
 # RUN apk add --no-cache --virtual .build-deps php82-dev make gcc g++ autoconf php82-pear unixodbc-dev gnupg \
@@ -130,7 +135,17 @@ RUN chmod +x /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php
 #    && apk del .build-deps \
 #    && echo 'extension=sqlsrv.so' > /etc/php82/conf.d/98_sqlserver.ini \
 #    && echo 'extension=pdo_sqlsrv.so' > /etc/php82/conf.d/99_sqlserver.ini
-        
+
+# Habilita FPM e HTTP2 'clean_env no' não deve ser usado em produção
+RUN sed -i 's/#LoadModule mpm_event_module modules\/mod_mpm_event.so/LoadModule mpm_event_module modules\/mod_mpm_event.so/' /etc/apache2/httpd.conf; \
+    sed -i 's/LoadModule mpm_prefork_module modules\/mod_mpm_prefork.so/#LoadModule mpm_prefork_module modules\/mod_mpm_prefork.so/' /etc/apache2/httpd.conf; \
+    echo '<FilesMatch "\.(php)$">' >> /etc/apache2/httpd.conf; \
+    echo '   SetHandler "proxy:fcgi://127.0.0.1:9000"' >> /etc/apache2/httpd.conf; \
+    echo '</FilesMatch>' >> /etc/apache2/httpd.conf; \
+    echo 'clear_env = no' >> /etc/php82/php-fpm.conf; \
+    echo 'Protocols h2c http/1.1' >> /etc/apache2/httpd.conf
+
+USER apache
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/bin/sh", "-c", "crond && httpd -DFOREGROUND"]
+CMD ["/bin/sh", "-c", "crond && php-fpm82 -D && httpd -DFOREGROUND"]
