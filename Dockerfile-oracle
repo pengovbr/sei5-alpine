@@ -113,7 +113,11 @@ RUN apk add --no-cache \
 # RUN apk add --no-cache ffmpeg;
 
 COPY assets/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php
+RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php ; \
+    mkdir -p /var/www/html; \
+    mkdir -p /opt/sei/temp; mkdir -p /opt/sip/temp; \
+    chown apache:apache /var/www/logs/ ; chown apache:apache /var/log/php82/; \
+    echo 'ServerName localhost:80' >> /etc/apache2/httpd.conf; echo 'PidFile /tmp/httpd.pid' >> /etc/apache2/httpd.conf
 
 # Permite o uso do SQLSERVER mas não funciona corretamente devido ao requisito de iso88591 do SEI
 # RUN apk add --no-cache --virtual .build-deps php82-dev make gcc g++ autoconf php82-pear unixodbc-dev gnupg \
