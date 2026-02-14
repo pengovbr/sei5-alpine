@@ -55,7 +55,6 @@ RUN apk add --no-cache \
       php82-simplexml \
       php82-sodium \
       php82-shmop \
-      php82-snmp \
       php82-soap \
       php82-xml \
       php82-zip \
