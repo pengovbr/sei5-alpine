@@ -15,6 +15,14 @@ RUN apk add --no-cache \
 
 ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 
+# CVE-2026-25646 - libpng
+# CVE-2025-14017, CVE-2025-13034, CVE-2025-15079 - curl
+# CVE-2025-14819, CVE-2025-14524, CVE-2025-10966 - curl
+# CVE-2025-15224 - curl
+RUN apk add --no-cache \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+    curl libpng;
+
 RUN apk add --no-cache \
       apache2 \ 
       apache2-http2 \
@@ -102,7 +110,7 @@ RUN mkdir -p /var/sei/arquivos && chown -R apache:apache /var/sei/arquivos && ch
 RUN mkdir -p /var/log/sei && mkdir -p /var/log/sip
 # Suporte para atualização do SEI. O script de atualização do SEI está fixo no bash
 RUN apk add --no-cache \
-    bash curl;
+    bash;
 
 # Suporte para módulo de assinatura avançada
 RUN apk add --no-cache \
