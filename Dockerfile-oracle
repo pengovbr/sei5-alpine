@@ -168,8 +168,9 @@ RUN apk --no-cache add libaio libnsl libc6-compat curl make php82-pear php82-dev
     rm -rf /tmp/*.zip /var/cache/apk/* /tmp/pear/ ${ORACLE_HOME}/sdk
 
 # Habilita FPM e HTTP2 'clean_env no' não deve ser usado em produção
-RUN sed -i 's/#LoadModule mpm_event_module modules\/mod_mpm_event.so/LoadModule mpm_event_module modules\/mod_mpm_event.so/' /etc/apache2/httpd.conf; \
-    sed -i 's/LoadModule mpm_prefork_module modules\/mod_mpm_prefork.so/#LoadModule mpm_prefork_module modules\/mod_mpm_prefork.so/' /etc/apache2/httpd.conf; \
+RUN sed -i \
+        -e 's/^#\(LoadModule .*mod_mpm_event.so\)/\1/' \
+        -e 's/^LoadModule .*mod_mpm_prefork.so/#\0/' /etc/apache2/httpd.conf; \
     echo '<FilesMatch "\.(php)$">' >> /etc/apache2/httpd.conf; \
     echo '   SetHandler "proxy:fcgi://127.0.0.1:9000"' >> /etc/apache2/httpd.conf; \
     echo '</FilesMatch>' >> /etc/apache2/httpd.conf; \
