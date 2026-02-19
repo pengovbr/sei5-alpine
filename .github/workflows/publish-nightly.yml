@@ -1,0 +1,65 @@
+name: Nightly build
+
+on:
+  schedule:
+    - cron: '0 0 * * *' 
+  paths:
+    - 'Dockerfile'
+    - 'Dockerfile-oracle'
+    - 'assets/**'
+    - '.github/workflows/publish-nightly.yml'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: processoeletronico/sei5-alpine
+            dockerfile: Dockerfile
+          - image: processoeletronico/sei5-alpine-oracle
+            dockerfile: Dockerfile-oracle
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+          tags: |
+            type=raw,value=nigthly,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          sbom: true
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Docker Scout
+        uses: docker/scout-action@v1.18.2
+        with:
+          command: cves,recommendations
+          image: ${{ matrix.image }}
+          to-latest: true
+          ignore-base: true
+          ignore-unchanged: true
+          sarif-file: sarif.output.json
+          summary: true
+      - name: Upload SARIF result
+        id: upload-sarif
+        if: ${{ github.event_name != 'pull_request_target' }}
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: sarif.output.json
