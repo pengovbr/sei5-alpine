@@ -2,12 +2,7 @@ name: Nightly build
 
 on:
   schedule:
-    - cron: '0 0 * * *' 
-  paths:
-    - 'Dockerfile'
-    - 'Dockerfile-oracle'
-    - 'assets/**'
-    - '.github/workflows/publish-nightly.yml'
+    - cron: '0 0 * * *'
 
 jobs:
   docker:
