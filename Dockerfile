@@ -78,6 +78,7 @@ RUN apk add --no-cache \
     libssl3 \
     ca-certificates \
     fontconfig \
+    font-carlito \
     freetype \
     ttf-dejavu \
     ttf-droid \
