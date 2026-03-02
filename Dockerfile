@@ -127,23 +127,6 @@ RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bi
     chown apache:apache /var/www/logs/ ; chown apache:apache /var/log/php82/; \
     echo 'ServerName localhost:80' >> /etc/apache2/httpd.conf; echo 'PidFile /tmp/httpd.pid' >> /etc/apache2/httpd.conf
 
-# Permite o uso do SQLSERVER mas não funciona corretamente devido ao requisito de iso88591 do SEI
-# RUN apk add --no-cache --virtual .build-deps php82-dev make gcc g++ autoconf php82-pear unixodbc-dev gnupg \
-#    && curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/msodbcsql18_18.3.2.1-1_amd64.apk \
-#    && curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/mssql-tools18_18.3.1.1-1_amd64.apk \
-#    && curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/msodbcsql18_18.3.2.1-1_amd64.sig \
-#    && curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/mssql-tools18_18.3.1.1-1_amd64.sig \
-#    && curl https://packages.microsoft.com/keys/microsoft.asc  | gpg --import - \
-#    && gpg --verify msodbcsql18_18.3.2.1-1_amd64.sig msodbcsql18_18.3.2.1-1_amd64.apk \
-#    && gpg --verify mssql-tools18_18.3.1.1-1_amd64.sig mssql-tools18_18.3.1.1-1_amd64.apk \
-#    && apk add --allow-untrusted msodbcsql18_18.3.2.1-1_amd64.apk mssql-tools18_18.3.1.1-1_amd64.apk \
-#    && rm *.apk *.sig \
-#    && apk add --no-cache unixodbc \
-#    && pecl82 install pdo_sqlsrv sqlsrv \
-#    && apk del .build-deps \
-#    && echo 'extension=sqlsrv.so' > /etc/php82/conf.d/98_sqlserver.ini \
-#    && echo 'extension=pdo_sqlsrv.so' > /etc/php82/conf.d/99_sqlserver.ini
-
 # Habilita FPM e HTTP2 'clean_env no' não deve ser usado em produção
 RUN sed -i \
         -e 's/^#\(LoadModule .*mod_mpm_event.so\)/\1/' \
