@@ -41,7 +41,7 @@ jobs:
           context: .
           file: ${{ matrix.dockerfile }}
           sbom: true
-          push: true
+          load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Docker Scout
