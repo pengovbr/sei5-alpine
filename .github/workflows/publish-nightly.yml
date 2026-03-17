@@ -47,7 +47,7 @@ jobs:
         uses: docker/scout-action@v1.18.2
         with:
           command: cves,recommendations
-          image: ${{ matrix.image }}
+          image: ${{ steps.meta.outputs.tags }}
           to-latest: true
           ignore-base: true
           ignore-unchanged: true
