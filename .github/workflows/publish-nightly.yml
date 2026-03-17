@@ -18,10 +18,10 @@ jobs:
             dockerfile: Dockerfile-sqlserver
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ matrix.image }}
           tags: |
@@ -44,7 +44,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Docker Scout
-        uses: docker/scout-action@v1.18.2
+        uses: docker/scout-action@v1.20.2
         with:
           command: cves,recommendations
           image: ${{ steps.meta.outputs.tags }}
