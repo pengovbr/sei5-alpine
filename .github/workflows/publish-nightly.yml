@@ -1,4 +1,4 @@
-name: Nightly build
+name: Nightly scan
 
 on:
   schedule:
@@ -35,7 +35,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
+      - name: Build
         uses: docker/build-push-action@v7
         with:
           context: .
