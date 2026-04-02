@@ -127,7 +127,7 @@ RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bi
     chown apache:apache /var/www/logs/ ; chown apache:apache /var/log/php82/; \
     echo 'ServerName localhost:80' >> /etc/apache2/httpd.conf; echo 'PidFile /tmp/httpd.pid' >> /etc/apache2/httpd.conf
 
-# Habilita FPM e HTTP2 'clean_env no' não deve ser usado em produção
+# Habilita FPM e HTTP2. O 'clean_env no' não deve ser usado em produção
 RUN sed -i \
         -e 's/^#\(LoadModule .*mod_mpm_event.so\)/\1/' \
         -e 's/^LoadModule .*mod_mpm_prefork.so/#\0/' /etc/apache2/httpd.conf; \
@@ -137,7 +137,8 @@ RUN sed -i \
     echo 'clear_env = no' >> /etc/php82/php-fpm.conf; \
     echo 'Protocols h2c http/1.1' >> /etc/apache2/httpd.conf
 
-USER apache
+# Em DEV vários módulos esperam que esteja no root
+# USER apache
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/sh", "-c", "crond && php-fpm82 -D && httpd -DFOREGROUND"]
