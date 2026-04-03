@@ -18,11 +18,12 @@ jobs:
     strategy:
       matrix:
         plataform: [amd64, arm64]
+        image: [processoeletronico/sei5-alpine, processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
         include:
           - platform: amd64
             runner: ubuntu-latest
           - platform: arm64
-            runner: ubuntu-latest-arm
+            runner: ubuntu-24.04-arm
           - image: processoeletronico/sei5-alpine
             dockerfile: Dockerfile
           - image: processoeletronico/sei5-alpine-oracle
