@@ -7,16 +7,22 @@ on:
     paths:
       - 'Dockerfile'
       - 'Dockerfile-oracle'
+      - 'Dockerfile-sqlserver'
       - 'assets/**'
       - '.github/workflows/publish.yml'
     tags:
       - "*.*.*"
 jobs:
   docker:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
+        plataform: [amd64, arm64]
         include:
+          - platform: amd64
+            runner: ubuntu-latest
+          - platform: arm64
+            runner: ubuntu-latest-arm
           - image: processoeletronico/sei5-alpine
             dockerfile: Dockerfile
           - image: processoeletronico/sei5-alpine-oracle
@@ -46,7 +52,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
-          platforms: linux/amd64,linux/arm64
           context: .
           file: ${{ matrix.dockerfile }}
           sbom: true
