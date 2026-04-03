@@ -30,6 +30,9 @@ jobs:
             dockerfile: Dockerfile-oracle
           - image: processoeletronico/sei5-alpine-sqlserver
             dockerfile: Dockerfile-sqlserver
+        exclude:
+          - platform: arm64
+            image: processoeletronico/sei5-alpine-oracle
     steps:
       - name: Checkout
         uses: actions/checkout@v6
