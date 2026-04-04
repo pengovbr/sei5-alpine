@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        plataform: [amd64, arm64]
+        platform: [amd64, arm64]
         image: [processoeletronico/sei5-alpine, processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
         include:
           - platform: amd64
