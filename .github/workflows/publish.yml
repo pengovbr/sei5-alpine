@@ -17,13 +17,15 @@ jobs:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        platform: [x64, arm64]
+        platform: [linux/amd64, linux/arm64]
         image: [processoeletronico/sei5-alpine, processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
         include:
-          - platform: x64
+          - platform: linux/amd64
             runner: ubuntu-latest
-          - platform: arm64
+            versao: x64
+          - platform: linux/arm64
             runner: ubuntu-24.04-arm
+            versao: arm64
           - image: processoeletronico/sei5-alpine
             dockerfile: Dockerfile
           - image: processoeletronico/sei5-alpine-oracle
@@ -32,6 +34,10 @@ jobs:
             dockerfile: Dockerfile-sqlserver
 
     steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v6
       - name: Docker meta
@@ -55,13 +61,16 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
+          platforms: ${{ matrix.platform }}
           file: ${{ matrix.dockerfile }}
           sbom: true
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=build-${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,scope=build-${{ env.PLATFORM_PAIR }}
           build-args: |
-            "PLATFORM=${{ matrix.platform }}"
+            "PLATFORM=${{ matrix.versao }}"
             "OICD_VERSION=23.26.1.0.0"
       - name: Docker Scout
         uses: docker/scout-action@v1.20.2
