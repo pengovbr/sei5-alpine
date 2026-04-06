@@ -3,13 +3,13 @@
 ##############################################################################
 
 ARG OICD_VERSION=23.26.1.0.0
-ARG PLATFORM
+ARG TARGETPLATFORM
 FROM socheatsok78/oracle-instantclient:${OICD_VERSION}-basic AS instantclient
 
 
 FROM alpine:3.22.3
 ARG OICD_VERSION
-ARG PLATFORM
+ARG TARGETPLATFORM
 LABEL \
     org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"
 
@@ -138,6 +138,7 @@ COPY --from=instantclient /opt/oracle /opt/oracle
 
 RUN apk --no-cache add gcompat libaio libnsl make curl php82-pear php82-dev gcc musl-dev && \
     folder=$(echo "$OICD_VERSION" | tr -d '.') && \
+    if [ "$TARGETPLATFORM" = "linux/arm64" ]; then PLATFORM=arm64; else PLATFORM=x64; fi && \
     curl -v -o instantclient-sdk.zip "https://download.oracle.com/otn_software/linux/instantclient/$folder/instantclient-sdk-linux.$PLATFORM-$OICD_VERSION.zip" -SL && \
     unzip -o instantclient-sdk.zip && \
     mv -f instantclient*/* /opt/oracle/instantclient && \

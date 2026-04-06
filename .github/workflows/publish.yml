@@ -23,7 +23,6 @@ jobs:
             dockerfile: Dockerfile
           - image: processoeletronico/sei5-alpine-oracle
             dockerfile: Dockerfile-oracle
-            versao: x64
           - image: processoeletronico/sei5-alpine-sqlserver
             dockerfile: Dockerfile-sqlserver
 
@@ -38,6 +37,8 @@ jobs:
           tags: |
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=pep440,pattern={{version}}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
       - name: Login to Docker Hub
@@ -50,73 +51,12 @@ jobs:
         with:
           context: .
           file: ${{ matrix.dockerfile }}
+          pltaforms: linux/amd64, linux/arm64
           sbom: true
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            "PLATFORM=${{ matrix.versao }}"
-            "OICD_VERSION=23.26.1.0.0"
-      - name: Docker Scout
-        uses: docker/scout-action@v1.20.2
-        with:
-          command: cves,recommendations
-          image: ${{ matrix.image }}
-          to-latest: true
-          ignore-base: true
-          ignore-unchanged: true
-          sarif-file: sarif.output.json
-          summary: true
-      - name: Upload SARIF result
-        id: upload-sarif
-        if: ${{ github.event_name != 'pull_request_target' }}
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: sarif.output.json
-  # para ARM64
-  docker-arm64:
-    runs-on: ubuntu-24.04-arm
-    strategy:
-      matrix:
-        image: [processoeletronico/sei5-alpine-arm64, processoeletronico/sei5-alpine-oracle-arm64, processoeletronico/sei5-alpine-sqlserver-arm64]
-        include:            
-          - image: processoeletronico/sei5-alpine-arm64
-            dockerfile: Dockerfile
-          - image: processoeletronico/sei5-alpine-oracle-arm64
-            dockerfile: Dockerfile-oracle
-            versao: arm64
-          - image: processoeletronico/sei5-alpine-sqlserver-arm64
-            dockerfile: Dockerfile-sqlserver
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v6
-        with:
-          images: ${{ matrix.image }}
-          tags: |
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-            type=pep440,pattern={{version}}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-      - name: Login to Docker Hub
-        uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: ${{ matrix.dockerfile }}
-          sbom: true
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            "PLATFORM=${{ matrix.versao }}"
             "OICD_VERSION=23.26.1.0.0"
       - name: Docker Scout
         uses: docker/scout-action@v1.20.2
