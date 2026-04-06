@@ -98,7 +98,7 @@ jobs:
         # The digest is used to uniquely identify the built image and can be used for further processing or verification.
         run: |
           mkdir -p /tmp/digests
-          digest="${{ steps.build.outputs.digest }}"
+          digest="${{ steps.docker.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
 
       - name: Upload digest
