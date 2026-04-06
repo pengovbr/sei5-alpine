@@ -50,7 +50,8 @@ jobs:
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
-          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+          image=${{ matrix.image }}
+          echo "PLATFORM_PAIR=${platform//\//-}-${image//\//-}" >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v6
       - name: Docker meta
