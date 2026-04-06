@@ -67,8 +67,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha,scope=build-${{ env.PLATFORM_PAIR }}
-          cache-to: type=gha,scope=build-${{ env.PLATFORM_PAIR }}
+          cache-from: type=raw,value=latest,scope=build-${{ env.PLATFORM_PAIR }}
+          cache-to: type=raw,value=latest,scope=build-${{ env.PLATFORM_PAIR }}
           build-args: |
             "PLATFORM=${{ matrix.versao }}"
             "OICD_VERSION=23.26.1.0.0"
