@@ -127,111 +127,111 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: sarif.output.json
-merge:
-  # This job merges the Docker manifests for the different platforms built in the previous job.
-  name: Merge Docker manifests
-  runs-on: ubuntu-latest
-  strategy:
-    matrix:
-      image: [processoeletronico/sei5-alpine, processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
-      
-  permissions:
-    attestations: write
-    actions: read
-    checks: read
-    contents: read
-    deployments: none
-    id-token: write
-    issues: read
-    discussions: read
-    packages: write
-    pages: none
-    pull-requests: read
-    repository-projects: read
-    security-events: read
-    statuses: read
+  merge:
+    # This job merges the Docker manifests for the different platforms built in the previous job.
+    name: Merge Docker manifests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [processoeletronico/sei5-alpine, processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
+        
+    permissions:
+      attestations: write
+      actions: read
+      checks: read
+      contents: read
+      deployments: none
+      id-token: write
+      issues: read
+      discussions: read
+      packages: write
+      pages: none
+      pull-requests: read
+      repository-projects: read
+      security-events: read
+      statuses: read
 
-  needs:
-    - docker
-    # This job depends on the build job to complete before it starts.
-    # It ensures that the Docker images for all platforms are built before merging the manifests.
-  steps:
-    - name: Download digests
-      # This step downloads the digest files uploaded in the build job.
-      # It uses the actions/download-artifact action to download the artifacts with the pattern digests-*.
-      # The downloaded files are merged into the /tmp/digests directory.
-      uses: actions/download-artifact@v8 # v8.0.1
-      with:
-        path: /tmp/digests
-        pattern: digests-*
-        merge-multiple: true
+    needs:
+      - docker
+      # This job depends on the build job to complete before it starts.
+      # It ensures that the Docker images for all platforms are built before merging the manifests.
+    steps:
+      - name: Download digests
+        # This step downloads the digest files uploaded in the build job.
+        # It uses the actions/download-artifact action to download the artifacts with the pattern digests-*.
+        # The downloaded files are merged into the /tmp/digests directory.
+        uses: actions/download-artifact@v8 # v8.0.1
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
 
 
-    - name: Docker meta
-      # This step generates metadata for the Docker image.
-      # It uses the docker/metadata-action to create metadata based on the repository information.
-      # The metadata includes information such as the image name, tags, and labels.
-      id: meta
-      uses: docker/metadata-action@v6 # v6.0.0
-      with:
-        images: ${{ matrix.image }}
-        annotations: |
-          type=org.opencontainers.image.description,value=${{ github.event.repository.description || 'No description provided' }}
-        tags: |
-          type=raw,value=latest,enable=${{ github.ref_name == 'main' }}
-          type=pep440,pattern={{version}}
+      - name: Docker meta
+        # This step generates metadata for the Docker image.
+        # It uses the docker/metadata-action to create metadata based on the repository information.
+        # The metadata includes information such as the image name, tags, and labels.
+        id: meta
+        uses: docker/metadata-action@v6 # v6.0.0
+        with:
+          images: ${{ matrix.image }}
+          annotations: |
+            type=org.opencontainers.image.description,value=${{ github.event.repository.description || 'No description provided' }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref_name == 'main' }}
+            type=pep440,pattern={{version}}
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
-      # This step sets up Docker Buildx, which is a Docker CLI plugin for extended build capabilities with BuildKit.
-      with:
-        driver-opts: |
-          network=host
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+        # This step sets up Docker Buildx, which is a Docker CLI plugin for extended build capabilities with BuildKit.
+        with:
+          driver-opts: |
+            network=host
 
-    - name: Login to dockerhub Container Registry
-      uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to dockerhub Container Registry
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Get execution timestamp with RFC3339 format
-      id: timestamp
-      run: |
-        echo "timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
+      - name: Get execution timestamp with RFC3339 format
+        id: timestamp
+        run: |
+          echo "timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
 
-    - name: Create manifest list and pushs
-      # This step creates a manifest list for the Docker images built for different platforms.
-      # It uses the docker buildx imagetools create command to create the manifest list.
-      # The manifest list is annotated with metadata such as description, creation timestamp, and source URL.
-      # The annotations are obtained from the metadata generated in the previous steps.
-      # The manifest list is pushed to the GitHub Container Registry (GHCR) with the specified tags.
-      working-directory: /tmp/digests
-      id: manifest-annotate
-      continue-on-error: true
-      run: |
-            docker buildx imagetools create \
-              $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-              --annotation='index:org.opencontainers.image.description=${{ github.event.repository.description }}' \
-              --annotation='index:org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}' \
-              --annotation='index:org.opencontainers.image.url=${{ github.event.repository.url }}' \
-              --annotation='index:org.opencontainers.image.source=${{ github.event.repository.url }}' \
-              $(printf '${{ matrix.image }}@sha256:%s ' *)
+      - name: Create manifest list and pushs
+        # This step creates a manifest list for the Docker images built for different platforms.
+        # It uses the docker buildx imagetools create command to create the manifest list.
+        # The manifest list is annotated with metadata such as description, creation timestamp, and source URL.
+        # The annotations are obtained from the metadata generated in the previous steps.
+        # The manifest list is pushed to the GitHub Container Registry (GHCR) with the specified tags.
+        working-directory: /tmp/digests
+        id: manifest-annotate
+        continue-on-error: true
+        run: |
+              docker buildx imagetools create \
+                $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+                --annotation='index:org.opencontainers.image.description=${{ github.event.repository.description }}' \
+                --annotation='index:org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}' \
+                --annotation='index:org.opencontainers.image.url=${{ github.event.repository.url }}' \
+                --annotation='index:org.opencontainers.image.source=${{ github.event.repository.url }}' \
+                $(printf '${{ matrix.image }}@sha256:%s ' *)
 
-    - name: Create manifest list and push without annotations
-      # This step creates a manifest list for the Docker images built for different platforms.
-      # It uses the docker buildx imagetools create command to create the manifest list.
-      # The manifest list is created without annotations if the previous step fails.
-      # The manifest list is pushed to the GitHub Container Registry (GHCR) with the specified tags.
-      if: steps.manifest-annotate.outcome == 'failure'
-      working-directory: /tmp/digests
-      run: |
-            docker buildx imagetools create  $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-              $(printf '${{ matrix.image }}@sha256:%s ' *)
+      - name: Create manifest list and push without annotations
+        # This step creates a manifest list for the Docker images built for different platforms.
+        # It uses the docker buildx imagetools create command to create the manifest list.
+        # The manifest list is created without annotations if the previous step fails.
+        # The manifest list is pushed to the GitHub Container Registry (GHCR) with the specified tags.
+        if: steps.manifest-annotate.outcome == 'failure'
+        working-directory: /tmp/digests
+        run: |
+              docker buildx imagetools create  $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+                $(printf '${{ matrix.image }}@sha256:%s ' *)
 
-    - name: Inspect image
-      # This step inspects the created manifest list to verify its contents.
-      # It uses the docker buildx imagetools inspect command to display information about the manifest list.
-      # The inspection output will show the platforms and tags associated with the manifest list.
-      id: inspect
-      run: |
-        docker buildx imagetools inspect '${{ matrix.image }}:${{ steps.meta.outputs.version }}'
+      - name: Inspect image
+        # This step inspects the created manifest list to verify its contents.
+        # It uses the docker buildx imagetools inspect command to display information about the manifest list.
+        # The inspection output will show the platforms and tags associated with the manifest list.
+        id: inspect
+        run: |
+          docker buildx imagetools inspect '${{ matrix.image }}:${{ steps.meta.outputs.version }}'
