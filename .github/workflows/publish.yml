@@ -17,10 +17,10 @@ jobs:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        platform: [amd64, arm64]
+        platform: [x64, arm64]
         image: [processoeletronico/sei5-alpine, processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
         include:
-          - platform: amd64
+          - platform: x64
             runner: ubuntu-latest
           - platform: arm64
             runner: ubuntu-24.04-arm
@@ -30,9 +30,7 @@ jobs:
             dockerfile: Dockerfile-oracle
           - image: processoeletronico/sei5-alpine-sqlserver
             dockerfile: Dockerfile-sqlserver
-        exclude:
-          - platform: arm64
-            image: processoeletronico/sei5-alpine-oracle
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -62,6 +60,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            "PLATFORM=${{ matrix.platform }}"
+            "OICD_VERSION=23.26.1.0.0"
       - name: Docker Scout
         uses: docker/scout-action@v1.20.2
         with:

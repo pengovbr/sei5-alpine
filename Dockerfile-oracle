@@ -2,8 +2,14 @@
 # Dockerfile de construcao do container APP com os pacotes basicos 
 ##############################################################################
 
-FROM alpine:3.22.3
+ARG OICD_VERSION=23.26.1.0.0
+ARG PLATFORM
+FROM socheatsok78/oracle-instantclient:${OICD_VERSION}-basic AS instantclient
 
+
+FROM alpine:3.22.3
+ARG OICD_VERSION
+ARG PLATFORM
 LABEL \
     org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"
 
@@ -124,26 +130,18 @@ RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bi
     chown apache:apache /var/www/logs/ ; chown apache:apache /var/log/php82/; \
     echo 'ServerName localhost:80' >> /etc/apache2/httpd.conf; echo 'PidFile /tmp/httpd.pid' >> /etc/apache2/httpd.conf
 
-ENV ORACLE_HOME=/usr/lib/instantclient
-ENV LD_LIBRARY_PATH=/usr/lib/instantclient
+# Final
+ENV PATH=/opt/oracle/instantclient:$PATH
+ENV LD_LIBRARY_PATH=/opt/oracle/instantclient
+ENV ORACLE_HOME=/opt/oracle/instantclient
+COPY --from=instantclient /opt/oracle /opt/oracle
 
-RUN apk --no-cache add libaio libnsl libc6-compat curl make php82-pear php82-dev gcc musl-dev && \
-    cd /tmp && \
-    curl -o instantclient-basiclite.zip https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linuxx64.zip -SL && \
-    unzip instantclient-basiclite.zip && \
-    mv instantclient*/ /usr/lib/instantclient && \
-    rm instantclient-basiclite.zip && \
-    curl -o instantclient-sdk.zip https://download.oracle.com/otn_software/linux/instantclient/instantclient-sdk-linuxx64.zip -SL && \
+RUN apk --no-cache add gcompat libaio libnsl make curl php82-pear php82-dev gcc musl-dev && \
+    folder=$(echo "$OICD_VERSION" | tr -d '.') && \
+    curl -v -o instantclient-sdk.zip "https://download.oracle.com/otn_software/linux/instantclient/$folder/instantclient-sdk-linux.$PLATFORM-$OICD_VERSION.zip" -SL && \
     unzip -o instantclient-sdk.zip && \
-    mv -f instantclient*/* /usr/lib/instantclient && \
+    mv -f instantclient*/* /opt/oracle/instantclient && \
     rm instantclient-sdk.zip && \
-    ln -s /usr/lib/instantclient/libclntsh.so.21.1 /usr/lib/libclntsh.so && \
-    ln -s /usr/lib/instantclient/libocci.so.21.1 /usr/lib/libocci.so && \
-    ln -s /usr/lib/instantclient/libociicus.so /usr/lib/libociicus.so && \
-    ln -s /usr/lib/instantclient/libnnz21.so /usr/lib/libnnz21.so && \
-    ln -s /usr/lib/libnsl.so.2 /usr/lib/libnsl.so.1 && \
-    ln -s /lib/libc.so.6 /usr/lib/libresolv.so.2 && \
-    ln -s /lib64/ld-linux-x86-64.so.2 /usr/lib/ld-linux-x86-64.so.2 && \
     echo "instantclient,${ORACLE_HOME}" | pecl82 install oci8 &&\
     echo 'extension=oci8.so' > /etc/php82/conf.d/30-oci8.ini &&\
     apk del make php82-pear php82-dev gcc musl-dev && \
