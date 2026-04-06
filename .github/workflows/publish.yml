@@ -13,8 +13,6 @@ on:
       - '.github/workflows/publish.yml'
     tags:
       - "*.*.*"
-env:
-  GHCR_IMAGE: ghcr.io/${{ github.repository }}
 
 permissions:
   contents: read
@@ -39,10 +37,13 @@ jobs:
             versao: arm64
           - image: processoeletronico/sei5-alpine
             dockerfile: Dockerfile
+            ghrcimage: ghcr.io/pengovbr/sei5-alpine
           - image: processoeletronico/sei5-alpine-oracle
             dockerfile: Dockerfile-oracle
+            ghrcimage: ghcr.io/pengovbr/sei5-alpine-oracle
           - image: processoeletronico/sei5-alpine-sqlserver
             dockerfile: Dockerfile-sqlserver
+            ghrcimage: ghcr.io/pengovbr/sei5-alpine-sqlserver
     permissions:
       packages: write
     steps:
@@ -56,7 +57,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ${{ env.GHCR_IMAGE }}
+          images: ${{ matrix.ghrcimage }}
       - name: Set up Docker Context for Buildx
       # This step sets up a Docker context for Buildx.
       # It creates a new context named "builders" that will be used for building the Docker image.
@@ -84,7 +85,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           file: ${{ matrix.dockerfile }}
           sbom: true
-          outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
+          outputs: type=image,name=${{ matrix.ghrcimage }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=build-${{ env.PLATFORM_PAIR }}
           cache-to: type=gha,scope=build-${{ env.PLATFORM_PAIR }}
