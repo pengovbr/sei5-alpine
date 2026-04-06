@@ -17,15 +17,12 @@ jobs:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        platform: [linux/amd64, linux/arm64]
+        platform: [linux/amd64]
         image: [processoeletronico/sei5-alpine, processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
         include:
           - platform: linux/amd64
             runner: ubuntu-latest
             versao: x64
-          - platform: linux/arm64
-            runner: ubuntu-24.04-arm
-            versao: arm64
           - image: processoeletronico/sei5-alpine
             dockerfile: Dockerfile
           - image: processoeletronico/sei5-alpine-oracle
