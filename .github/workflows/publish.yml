@@ -43,7 +43,8 @@ jobs:
             dockerfile: Dockerfile-oracle
           - image: processoeletronico/sei5-alpine-sqlserver
             dockerfile: Dockerfile-sqlserver
-
+    permissions:
+      packages: write
     steps:
       - name: Prepare
         run: |
