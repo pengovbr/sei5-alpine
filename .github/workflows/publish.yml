@@ -87,6 +87,7 @@ jobs:
           sbom: true
           outputs: type=image,name=${{ matrix.ghrcimage }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
           labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
           cache-from: type=gha,scope=build-${{ env.PLATFORM_PAIR }}
           cache-to: type=gha,scope=build-${{ env.PLATFORM_PAIR }}
           build-args: |
