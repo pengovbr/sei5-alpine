@@ -112,7 +112,7 @@ jobs:
         # The artifact is retained for 1 day, and if no files are found, it will throw an error.      
         uses: actions/upload-artifact@v7 # v7.0.0
         with:
-          name: digests-${{ env.PLATFORM_PAIR }}-${{ matrix.image }}
+          name: digests-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
