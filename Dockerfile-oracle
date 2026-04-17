@@ -7,7 +7,7 @@ ARG TARGETPLATFORM
 FROM socheatsok78/oracle-instantclient:${OICD_VERSION}-basic AS instantclient
 
 
-FROM alpine:3.22.3
+FROM alpine:3.22.4
 ARG OICD_VERSION
 ARG TARGETPLATFORM
 LABEL \
