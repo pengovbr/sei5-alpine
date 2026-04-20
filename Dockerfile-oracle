@@ -28,9 +28,10 @@ ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 # CVE-2006-5201 - nss 
 # CVE-2025-70873 - sqllite-libs dependencia do nss
 # CVE-2026-34085 - fontconfig
+# CVE-2026-22185 - libldap
 RUN apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
-    curl libpng nss fontconfig;
+    curl libpng nss fontconfig libldap;
 
 RUN apk add --no-cache \
       apache2 \ 
