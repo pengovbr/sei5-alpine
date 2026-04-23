@@ -85,7 +85,7 @@ jobs:
           build-args: |
             "VERSION=${{ steps.meta.outputs.tags }}"
             "OICD_VERSION=23.26.1.0.0"
-      - name: Docker Scout
+      - name: Docker Scout oracle sqlserver
         uses: docker/scout-action@v1.20.2
         with:
           command: cves,recommendations
@@ -95,7 +95,7 @@ jobs:
           ignore-unchanged: true
           sarif-file: sarif.output.json
           summary: true
-      - name: Upload SARIF result
+      - name: Upload SARIF result oracle sqlserver
         id: upload-sarif
         if: ${{ github.event_name != 'pull_request_target' }}
         uses: github/codeql-action/upload-sarif@v4
