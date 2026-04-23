@@ -44,7 +44,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-            - name: Build and push
+      - name: Build and push
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -60,7 +60,7 @@ jobs:
         uses: docker/scout-action@v1.20.2
         with:
           command: cves,recommendations
-          image: ${{ matrix.image }}
+          image: processoeletronico/sei5-alpine
           to-latest: true
           ignore-base: true
           ignore-unchanged: true
@@ -72,8 +72,6 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: sarif.output.json
-  oracle-sqlserver:
-    steps:
       - name: Build and push oracle, sqlserver
         uses: docker/build-push-action@v7
         with:
