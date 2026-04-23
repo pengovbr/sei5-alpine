@@ -1,9 +1,9 @@
 ##############################################################################
 # Dockerfile de construcao do container APP com os pacotes basicos 
 ##############################################################################
-ARG VERSION=latest
+ARG VERSION=processoeletronico/sei5-alpine:latest
 ARG TARGETPLATFORM
-FROM processoeletronico/sei5-alpine:${VERSION}
+FROM ${VERSION}
 
 # Permite o uso do SQLSERVER mas não funciona corretamente devido ao requisito de iso88591 do SEI
 RUN apk add --no-cache --virtual .build-deps php82-dev make gcc g++ autoconf php82-pear unixodbc-dev gnupg \

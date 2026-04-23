@@ -15,15 +15,6 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        image: [processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
-        include:
-          - image: processoeletronico/sei5-alpine-oracle
-            dockerfile: Dockerfile-oracle
-          - image: processoeletronico/sei5-alpine-sqlserver
-            dockerfile: Dockerfile-sqlserver
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -54,8 +45,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            "VERSION=${{ steps.meta.outputs.tags }}"
       - name: Docker Scout
         uses: docker/scout-action@v1.20.2
         with:
@@ -72,6 +61,37 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: sarif.output.json
+  oracle-sqlserver:
+    needs: docker
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
+        include:
+          - image: processoeletronico/sei5-alpine-oracle
+            dockerfile: Dockerfile-oracle
+          - image: processoeletronico/sei5-alpine-sqlserver
+            dockerfile: Dockerfile-sqlserver
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Docker meta
+        id: meta-oracle-sqlserver
+        uses: docker/metadata-action@v6
+        with:
+          images: processoeletronico/sei5-alpine
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=pep440,pattern={{version}}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push oracle, sqlserver
         uses: docker/build-push-action@v7
         with:
@@ -80,10 +100,10 @@ jobs:
           platforms: linux/amd64, linux/arm64
           sbom: true
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-oracle-sqlserver.outputs.tags }}
+          labels: ${{ steps.meta-oracle-sqlserver.outputs.labels }}
           build-args: |
-            "VERSION=${{ steps.meta.outputs.tags }}"
+            "VERSION=${{ steps.meta-oracle-sqlserver.outputs.tags }}"
             "OICD_VERSION=23.26.1.0.0"
       - name: Docker Scout oracle sqlserver
         uses: docker/scout-action@v1.20.2

@@ -2,13 +2,13 @@
 # Dockerfile de construcao do container APP com os pacotes basicos 
 ##############################################################################
 
-ARG VERSION=latest
+ARG VERSION=processoeletronico/sei5-alpine:latest
 ARG OICD_VERSION=23.26.1.0.0
 ARG TARGETPLATFORM
 FROM socheatsok78/oracle-instantclient:${OICD_VERSION}-basic AS instantclient
 
 
-FROM processoeletronico/sei5-alpine:${VERSION}
+FROM ${VERSION}
 ARG OICD_VERSION
 ARG TARGETPLATFORM
 
