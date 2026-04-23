@@ -17,10 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: [processoeletronico/sei5-alpine, processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
+        image: [processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
         include:
-          - image: processoeletronico/sei5-alpine
-            dockerfile: Dockerfile
           - image: processoeletronico/sei5-alpine-oracle
             dockerfile: Dockerfile-oracle
           - image: processoeletronico/sei5-alpine-sqlserver
@@ -33,7 +31,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ${{ matrix.image }}
+          images: processoeletronico/sei5-alpine
           tags: |
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=pep440,pattern={{version}}
@@ -46,7 +44,37 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
+            - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64, linux/arm64
+          sbom: true
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            "VERSION=${{ steps.meta.outputs.tags }}"
+      - name: Docker Scout
+        uses: docker/scout-action@v1.20.2
+        with:
+          command: cves,recommendations
+          image: ${{ matrix.image }}
+          to-latest: true
+          ignore-base: true
+          ignore-unchanged: true
+          sarif-file: sarif.output.json
+          summary: true
+      - name: Upload SARIF result
+        id: upload-sarif
+        if: ${{ github.event_name != 'pull_request_target' }}
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: sarif.output.json
+  oracle-sqlserver:
+    steps:
+      - name: Build and push oracle, sqlserver
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -57,6 +85,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
+            "VERSION=${{ steps.meta.outputs.tags }}"
             "OICD_VERSION=23.26.1.0.0"
       - name: Docker Scout
         uses: docker/scout-action@v1.20.2

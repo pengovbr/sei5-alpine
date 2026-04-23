@@ -129,10 +129,9 @@ RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bi
     mkdir -p /var/www/html; \
     mkdir -p /opt/sei/temp; mkdir -p /opt/sip/temp; \
     chown apache:apache /var/www/logs/ ; chown apache:apache /var/log/php82/; \
-    echo 'ServerName localhost:80' >> /etc/apache2/httpd.conf; echo 'PidFile /tmp/httpd.pid' >> /etc/apache2/httpd.conf
-
-# Habilita FPM e HTTP2. O 'clean_env no' não deve ser usado em produção
-RUN sed -i \
+    echo 'ServerName localhost:80' >> /etc/apache2/httpd.conf; echo 'PidFile /tmp/httpd.pid' >> /etc/apache2/httpd.conf; \
+    # Habilita FPM e HTTP2. O 'clean_env no' não deve ser usado em produção
+    sed -i \
         -e 's/^#\(LoadModule .*mod_mpm_event.so\)/\1/' \
         -e 's/^LoadModule .*mod_mpm_prefork.so/#\0/' /etc/apache2/httpd.conf; \
     echo '<FilesMatch "\.(php)$">' >> /etc/apache2/httpd.conf; \
