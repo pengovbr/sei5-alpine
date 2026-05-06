@@ -105,6 +105,7 @@ COPY --from=surnet/alpine-wkhtmltopdf:3.22.0-0.12.6-small \
 RUN apk add --no-cache openjdk8
 
 COPY assets/sei.ini /etc/php82/conf.d/99_sei.ini
+COPY assets/xdebug.ini /etc/php82/php-fpm.d/99_xdebug.ini
 COPY assets/xdebug.ini /etc/php82/conf.d/99_xdebug.ini
 COPY assets/sei.conf /etc/apache2/conf.d/
 COPY assets/cron.conf /etc/crontabs/root
