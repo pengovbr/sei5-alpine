@@ -1,7 +1,7 @@
 ##############################################################################
 # Dockerfile de construcao do container APP com os pacotes basicos 
 ##############################################################################
-ARG VERSION=processoeletronico/sei5-alpine:latest
+ARG VERSION=processoeletronico/sei5-alpine
 ARG TARGETPLATFORM
 FROM ${VERSION}
 
@@ -17,7 +17,7 @@ RUN apk add --no-cache --virtual .build-deps php82-dev make gcc g++ autoconf php
    && gpg --verify "msodbcsql18_18.3.2.1-1_$PLATFORM.sig" "msodbcsql18_18.3.2.1-1_$PLATFORM.apk" \
    && gpg --verify "mssql-tools18_18.3.1.1-1_$PLATFORM.sig" "mssql-tools18_18.3.1.1-1_$PLATFORM.apk" \
    && apk add --allow-untrusted "msodbcsql18_18.3.2.1-1_$PLATFORM.apk" "mssql-tools18_18.3.1.1-1_$PLATFORM.apk" \
-   && rm *.apk *.sig \
+   && rm *.apk *.sig microsoft.asc \
    && apk add --no-cache unixodbc \
    && pecl82 install pdo_sqlsrv-5.12.0 sqlsrv-5.12.0 \
    && apk del .build-deps \
