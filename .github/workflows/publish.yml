@@ -103,7 +103,6 @@ jobs:
           tags: ${{ steps.meta-oracle-sqlserver.outputs.tags }}
           labels: ${{ steps.meta-oracle-sqlserver.outputs.labels }}
           build-args: |
-            "VERSION=${{ steps.meta-oracle-sqlserver.outputs.tags }}"
             "OICD_VERSION=23.26.1.0.0"
       - name: Docker Scout oracle sqlserver
         uses: docker/scout-action@v1.20.2
