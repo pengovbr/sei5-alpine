@@ -79,7 +79,7 @@ jobs:
         id: meta-oracle-sqlserver
         uses: docker/metadata-action@v6
         with:
-          images: processoeletronico/sei5-alpine
+          images: ${{ matrix.image }}
           tags: |
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=pep440,pattern={{version}}
