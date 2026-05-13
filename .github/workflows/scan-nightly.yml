@@ -50,7 +50,6 @@ jobs:
           command: cves,recommendations,compare
           image: ${{ steps.meta.outputs.tags }}
           to: ${{ matrix.image }}:latest
-          to-latest: true
           ignore-base: true
           ignore-unchanged: true
           sarif-file: sarif.output.json
