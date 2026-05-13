@@ -46,7 +46,7 @@ jobs:
       - name: Docker Scout
         uses: docker/scout-action@v1.20.2
         with:
-          command: cves,recommendations
+          command: cves,recommendations,compare
           image: ${{ steps.meta.outputs.tags }}
           to-latest: true
           ignore-base: true
