@@ -49,7 +49,7 @@ jobs:
         with:
           command: cves,recommendations,compare
           image: ${{ steps.meta.outputs.tags }}
-          to: ${{ matrix.image }}
+          to: ${{ matrix.image }}:${{ steps.meta.outputs.tags }}
           to-latest: true
           ignore-base: true
           ignore-unchanged: true
