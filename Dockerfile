@@ -144,6 +144,9 @@ RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bi
 
 # Em DEV vários módulos esperam que esteja no root
 # USER apache
+
+# Para testes funcionais do mod-sei-pen
+RUN apk add --no-cache docker
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/sh", "-c", "crond && php-fpm82 -D && httpd -DFOREGROUND"]
