@@ -146,7 +146,7 @@ RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bi
 # USER apache
 
 # Para testes funcionais do mod-sei-pen
-RUN apk add --no-cache docker
+#RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ docker
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/sh", "-c", "crond && php-fpm82 -D && httpd -DFOREGROUND"]
