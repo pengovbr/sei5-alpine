@@ -73,7 +73,8 @@ RUN apk add --no-cache \
       php82-xml \
       php82-zip \
       php82-zlib \
-      php82-pecl-uploadprogress;
+      php82-pecl-uploadprogress \
+      libssl3=3.5.7-r0;
 
 # Pacotes para o wkhtmltopdf
 RUN apk add --no-cache \
@@ -112,7 +113,7 @@ COPY assets/sei.conf /etc/apache2/conf.d/
 COPY assets/cron.conf /etc/crontabs/root
 
 # Pasta para arquivos externos
-RUN mkdir -p /var/sei/arquivos && chown -R root:root /var/sei/arquivos && chmod 777 /tmp  && chmod 777 /var/sei/arquivos
+RUN mkdir -p /var/sei/arquivos && chown -R apache:apache /var/sei/arquivos && chmod 777 /tmp  && chmod 777 /var/sei/arquivos
 
 RUN mkdir -p /var/log/sei && mkdir -p /var/log/sip
 # Suporte para atualização do SEI. O script de atualização do SEI está fixo no bash
