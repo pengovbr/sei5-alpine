@@ -16,9 +16,13 @@ RUN apk add --no-cache \
 ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 
 # CVE-2006-5201 - nss
+# CVE-2026-49975 - apache2
 RUN apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
-    nss;
+      apache2 \
+      apache2-http2 \
+      apache2-proxy \
+      nss;
 
 RUN apk add --no-cache \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
@@ -94,9 +98,6 @@ COPY --from=surnet/alpine-wkhtmltopdf:3.22.0-0.12.6-small \
     /bin/wkhtmltopdf /bin/wkhtmltopdf
 
 RUN apk add --no-cache \
-      apache2 \
-      apache2-http2 \
-      apache2-proxy \
       openjdk8;
 
 COPY assets/sei.ini /etc/php82/conf.d/99_sei.ini

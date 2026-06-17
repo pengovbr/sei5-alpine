@@ -12,7 +12,7 @@ FROM socheatsok78/oracle-instantclient:${OICD_VERSION}-basic AS instantclient
 # Dockerfile de construcao do container APP com os pacotes basicos 
 ##############################################################################
 
-FROM alpine:3.22.4
+FROM alpine:3.24.1
 ARG OICD_VERSION
 ARG TARGETPLATFORM
 
@@ -27,24 +27,18 @@ RUN apk add --no-cache \
 
 ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 
-# CVE-2026-25646 - libpng
-# CVE-2025-14017, CVE-2025-13034, CVE-2025-15079 - curl
-# CVE-2025-14819, CVE-2025-14524, CVE-2025-10966 - curl
-# CVE-2025-15224 - curl
-# CVE-2006-5201 - nss 
-# CVE-2025-70873 - sqllite-libs dependencia do nss
-# CVE-2026-34085 - fontconfig
-# CVE-2026-22185 - libldap
-# CVE-2026-27456 - util-linux
-# CVE-2026-6732 - libxml2
+# CVE-2006-5201 - nss
+# CVE-2026-49975 - apache2
 RUN apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
-    curl libpng nss fontconfig libldap util-linux libxml2;
+     apache2 \
+     apache2-http2 \
+     apache2-proxy \
+     nss;
 
 RUN apk add --no-cache \
-      apache2 \
-      apache2-http2 \
-      apache2-proxy \
+      --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
+      --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/community/ \
       php82-bcmath \
       php82-bz2 \
       php82-calendar \
@@ -81,8 +75,7 @@ RUN apk add --no-cache \
       php82-xml \
       php82-zip \
       php82-zlib \
-      php82-pecl-uploadprogress \
-      libssl3=3.5.7-r0;
+      php82-pecl-uploadprogress;
 
 # Pacotes para o wkhtmltopdf
 RUN apk add --no-cache \
@@ -130,6 +123,7 @@ RUN apk add --no-cache \
 
 # Suporte para módulo de assinatura avançada
 RUN apk add --no-cache \
+    --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/community/ \
     php82-tokenizer php82-xmlwriter;
 
 # Geração de audio do captcha
