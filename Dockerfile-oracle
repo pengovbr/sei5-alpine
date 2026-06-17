@@ -151,7 +151,10 @@ ENV LD_LIBRARY_PATH=/opt/oracle/instantclient
 ENV ORACLE_HOME=/opt/oracle/instantclient
 COPY --from=instantclient /opt/oracle /opt/oracle
 
-RUN apk --no-cache add gcompat libaio libnsl make curl php82-pear php82-dev gcc musl-dev && \
+RUN apk add --no-cache \
+    --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
+    --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/community/ \
+    gcompat libaio libnsl make curl php82-pear php82-dev gcc musl-dev && \
     folder=$(echo "$OICD_VERSION" | tr -d '.') && \
     if [ "$TARGETPLATFORM" = "linux/arm64" ]; then PLATFORM=arm64; else PLATFORM=x64; fi && \
     curl -v -o instantclient-sdk.zip "https://download.oracle.com/otn_software/linux/instantclient/$folder/instantclient-sdk-linux.$PLATFORM-$OICD_VERSION.zip" -SL && \
