@@ -163,7 +163,7 @@ RUN apk add --no-cache \
     rm instantclient-sdk.zip && \
     echo "instantclient,${ORACLE_HOME}" | pecl82 install oci8 &&\
     echo 'extension=oci8.so' > /etc/php82/conf.d/30-oci8.ini &&\
-    apk del make php82-pear php82-dev gcc musl-dev && \
+    apk del make curl php82-pear php82-dev gcc musl-dev && \
     rm -rf /tmp/*.zip /var/cache/apk/* /tmp/pear/ ${ORACLE_HOME}/sdk
 
 # Em DEV vários módulos esperam que esteja no root
