@@ -67,6 +67,7 @@ jobs:
     strategy:
       matrix:
         image: [processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
+        fail-fast: false
         include:
           - image: processoeletronico/sei5-alpine-oracle
             dockerfile: Dockerfile-oracle
@@ -97,7 +98,7 @@ jobs:
         with:
           context: .
           file: ${{ matrix.dockerfile }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           sbom: true
           push: true
           tags: ${{ steps.meta-oracle-sqlserver.outputs.tags }}
