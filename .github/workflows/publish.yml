@@ -65,9 +65,9 @@ jobs:
     needs: docker
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         image: [processoeletronico/sei5-alpine-oracle, processoeletronico/sei5-alpine-sqlserver]
-        fail-fast: false
         include:
           - image: processoeletronico/sei5-alpine-oracle
             dockerfile: Dockerfile-oracle
