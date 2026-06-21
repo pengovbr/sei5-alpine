@@ -24,7 +24,7 @@ RUN apk add --no-cache \
      apache2-http2 \
      apache2-proxy \
      nss \
-     p11-kit;
+     p11-kit p11-kit-trust;
 
 RUN apk add --no-cache \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
