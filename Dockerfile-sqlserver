@@ -17,12 +17,14 @@ ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 
 # CVE-2006-5201 - nss 
 # CVE-2026-49975 - apache2
+# CVE-2026-2100 - p11-kit
 RUN apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
      apache2 \
      apache2-http2 \
      apache2-proxy \
-     nss;
+     nss \
+     p11-kit;
 
 RUN apk add --no-cache \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
