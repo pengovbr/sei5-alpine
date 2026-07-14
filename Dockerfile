@@ -48,6 +48,7 @@ RUN apk add --no-cache \
       php82-mbstring \
       php82-mysqli \
       php82-odbc \
+      php82-opcache \
       php82-openssl \
       php82-pcntl \
       php82-pdo \
@@ -104,6 +105,7 @@ RUN apk add --no-cache \
 
 COPY assets/sei.ini /etc/php82/conf.d/99_sei.ini
 COPY assets/xdebug.ini /etc/php82/php-fpm.d/99_xdebug.ini
+COPY assets/opcache.ini /etc/php82/conf.d/10_opcache.ini
 COPY assets/xdebug.ini /etc/php82/conf.d/99_xdebug.ini
 COPY assets/sei.conf /etc/apache2/conf.d/
 COPY assets/cache.conf /etc/apache2/conf.d/
