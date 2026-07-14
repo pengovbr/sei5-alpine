@@ -113,6 +113,7 @@ COPY assets/sei.ini /etc/php82/conf.d/99_sei.ini
 COPY assets/xdebug.ini /etc/php82/php-fpm.d/99_xdebug.ini
 COPY assets/xdebug.ini /etc/php82/conf.d/99_xdebug.ini
 COPY assets/sei.conf /etc/apache2/conf.d/
+COPY assets/cache.conf /etc/apache2/conf.d/
 COPY assets/cron.conf /etc/crontabs/root
 
 # Pasta para arquivos externos
@@ -140,7 +141,10 @@ RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bi
     # Habilita FPM e HTTP2. O 'clean_env no' não deve ser usado em produção
     sed -i \
         -e 's/^#\(LoadModule .*mod_mpm_event.so\)/\1/' \
-        -e 's/^LoadModule .*mod_mpm_prefork.so/#\0/' /etc/apache2/httpd.conf; \
+        -e 's/^LoadModule .*mod_mpm_prefork.so/#\0/' \
+        -e 's/^#\(LoadModule expires_module modules\/mod_expires.so\)/\1/' \
+        -e 's/^#\(LoadModule headers_module modules\/mod_headers.so\)/\1/' \
+        /etc/apache2/httpd.conf; \
     echo '<FilesMatch "\.(php)$">' >> /etc/apache2/httpd.conf; \
     echo '   SetHandler "proxy:fcgi://127.0.0.1:9000"' >> /etc/apache2/httpd.conf; \
     echo '</FilesMatch>' >> /etc/apache2/httpd.conf; \
