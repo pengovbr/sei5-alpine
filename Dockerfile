@@ -21,6 +21,7 @@ ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 RUN apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
      apache2 \
+     apache2-brotli \
      apache2-http2 \
      apache2-proxy \
      nss \
@@ -109,6 +110,7 @@ COPY assets/opcache.ini /etc/php82/conf.d/10_opcache.ini
 COPY assets/xdebug.ini /etc/php82/conf.d/99_xdebug.ini
 COPY assets/sei.conf /etc/apache2/conf.d/
 COPY assets/cache.conf /etc/apache2/conf.d/
+COPY assets/sei_compress.conf /etc/apache2/conf.d/
 COPY assets/cron.conf /etc/crontabs/root
 
 # Pasta para arquivos externos
