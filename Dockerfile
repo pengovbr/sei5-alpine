@@ -138,6 +138,7 @@ RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bi
     # Habilita FPM e HTTP2. O 'clean_env no' não deve ser usado em produção
     sed -i \
         -e 's/^#\(LoadModule .*mod_mpm_event.so\)/\1/' \
+        -e 's/^#\(LoadModule .*mod_deflate.so\)/\1/' \
         -e 's/^LoadModule .*mod_mpm_prefork.so/#\0/' \
         -e 's/^#\(LoadModule expires_module modules\/mod_expires.so\)/\1/' \
         -e 's/^#\(LoadModule headers_module modules\/mod_headers.so\)/\1/' \
