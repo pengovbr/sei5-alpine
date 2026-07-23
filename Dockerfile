@@ -101,7 +101,10 @@ RUN apk add --no-cache \
 COPY --from=surnet/alpine-wkhtmltopdf:3.22.0-0.12.6-small \
     /bin/wkhtmltopdf /bin/wkhtmltopdf
 
+# CVE-2026-22016
 RUN apk add --no-cache \
+      --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/  \
+      --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/  \
       openjdk8;
 
 COPY assets/sei.ini /etc/php82/conf.d/99_sei.ini
