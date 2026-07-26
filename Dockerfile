@@ -133,25 +133,60 @@ RUN apk add --no-cache \
 # RUN apk add --no-cache ffmpeg;
 
 COPY assets/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh ; chown apache:apache /entrypoint.sh ; ln -s /usr/bin/php82 /usr/bin/php ; \
-    mkdir -p /var/www/html; \
-    mkdir -p /opt/sei/temp; mkdir -p /opt/sip/temp; \
-    chown apache:apache /var/www/logs/ ; chown apache:apache /var/log/php82/; \
-    echo 'ServerName localhost:80' >> /etc/apache2/httpd.conf; echo 'PidFile /tmp/httpd.pid' >> /etc/apache2/httpd.conf; \
-    # Habilita FPM e HTTP2. O 'clean_env no' não deve ser usado em produção
+RUN set -eux; \
+    \
+    # Permissões e links
+    chmod +x /entrypoint.sh; \
+    chown apache:apache /entrypoint.sh; \
+    ln -sf /usr/bin/php82 /usr/bin/php; \
+    \
+    # Diretórios
+    mkdir -p \
+        /var/www/html \
+        /opt/sei/temp \
+        /opt/sip/temp; \
+    \
+    chown apache:apache \
+        /var/www/logs \
+        /var/log/php82; \
+    \
+    # Configuração básica do Apache
+    # HSTS não configurado por ser HTTP
+    # CSP deve bloquear scripts inline
+    { \
+        echo 'ServerName localhost:80'; \
+        echo 'PidFile /tmp/httpd.pid'; \
+        echo 'Protocols h2c http/1.1'; \
+        echo 'ServerTokens Prod'; \
+        echo 'ServerSignature Off'; \
+        echo 'Header always set X-Content-Type-Options "nosniff"'; \
+        echo 'Header always set Referrer-Policy "strict-origin-when-cross-origin"'; \
+    } >> /etc/apache2/httpd.conf; \
+    \
+    # Habilita módulos necessários
     sed -i \
         -e 's/^#\(LoadModule .*mod_mpm_event.so\)/\1/' \
         -e 's/^#\(LoadModule .*mod_deflate.so\)/\1/' \
         -e 's/^#\(LoadModule .*mod_rewrite.so\)/\1/' \
-        -e 's/^LoadModule .*mod_mpm_prefork.so/#\0/' \
         -e 's/^#\(LoadModule expires_module modules\/mod_expires.so\)/\1/' \
         -e 's/^#\(LoadModule headers_module modules\/mod_headers.so\)/\1/' \
+        -e 's/^LoadModule .*mod_mpm_prefork.so/#\0/' \
         /etc/apache2/httpd.conf; \
-    echo '<FilesMatch "\.(php)$">' >> /etc/apache2/httpd.conf; \
-    echo '   SetHandler "proxy:fcgi://127.0.0.1:9000"' >> /etc/apache2/httpd.conf; \
-    echo '</FilesMatch>' >> /etc/apache2/httpd.conf; \
-    echo 'clear_env = no' >> /etc/php82/php-fpm.conf; \
-    echo 'Protocols h2c http/1.1' >> /etc/apache2/httpd.conf
+    \
+    # PHP-FPM
+    { \
+        echo '<FilesMatch "\.php$">'; \
+        echo '    SetHandler "proxy:fcgi://127.0.0.1:9000"'; \
+        echo '</FilesMatch>'; \
+    } >> /etc/apache2/httpd.conf; \
+    \
+    # PHP
+    { \
+        echo 'expose_php = Off'; \
+    } >> /etc/php82/php.ini; \
+    \
+    # PHP-FPM (apenas para desenvolvimento)
+    echo 'clear_env = no' >> /etc/php82/php-fpm.conf
 
 # Em DEV vários módulos esperam que esteja no root
 # USER apache
