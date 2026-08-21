@@ -84,7 +84,7 @@ RUN apk add --no-cache \
     libc-dev \
     php82-dev \
     php82-tokenizer \
-    apk add --no-cache \
+    && apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ \
     gearman-libs \
     gearman-dev \
