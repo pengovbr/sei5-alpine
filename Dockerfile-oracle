@@ -81,6 +81,32 @@ RUN apk add --no-cache \
       php82-zlib \
       php82-pecl-uploadprogress;
 
+# instala suporte para gearman
+RUN apk add --no-cache \
+    --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
+    --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/community/ \
+    gcc \
+    g++ \
+    make \
+    autoconf \
+    libc-dev \
+    php82-dev \
+    php82-tokenizer \
+    apk add --no-cache \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ \
+    gearman-libs \
+    gearman-dev \
+    && pecl82 install gearman \
+    && echo "extension=gearman.so" > /etc/php82/conf.d/50_gearman.ini \
+    && apk del \
+        gearman-dev \
+        gcc \
+        g++ \
+        make \
+        autoconf \
+        libc-dev \
+        php82-dev
+
 # Pacotes para o wkhtmltopdf
 RUN apk add --no-cache \
     libstdc++ \
