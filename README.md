@@ -10,5 +10,8 @@ Banco sqlserver não tem suporte.
 
 Para banco Oracle usar imagem [sei5-alpine-oracle](https://hub.docker.com/r/processoeletronico/sei5-alpine-oracle).
 
-Para banco Sqlserver usar imagem [sei5-alpine-sqlserver](https://hub.docker.com/r/processoeletronico/sei5-alpine-sqlserver). Atenção que essa imagem não tem suporte para iso88591 e não funciona corretamente.
-
+> **⚠️ ATENÇÃO**
+>
+> Para banco de dados **SQL Server**, utilize a imagem [sei5-alpine-sqlserver](https://hub.docker.com/r/processoeletronico/sei5-alpine-sqlserver).
+>
+> Essa imagem **não possui suporte a `ISO-8859-1`** e, por isso, **não funciona corretamente em ambientes que utilizam essa codificação**.
