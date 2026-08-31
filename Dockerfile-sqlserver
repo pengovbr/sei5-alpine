@@ -2,7 +2,8 @@
 # Dockerfile de construcao do container APP com os pacotes basicos 
 ##############################################################################
 ARG TARGETPLATFORM
-FROM alpine:3.24.1
+# Temporario para fix do CVE do openssl
+FROM alpine:edge
 
 LABEL \
     org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"

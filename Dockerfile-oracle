@@ -12,7 +12,8 @@ FROM socheatsok78/oracle-instantclient:${OICD_VERSION}-basic AS instantclient
 # Dockerfile de construcao do container APP com os pacotes basicos 
 ##############################################################################
 
-FROM alpine:3.24.1
+# Temporario para fix do CVE do openssl
+FROM alpine:edge
 ARG OICD_VERSION
 ARG TARGETPLATFORM
 
