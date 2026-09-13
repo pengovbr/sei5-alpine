@@ -2,8 +2,7 @@
 # Dockerfile de construcao do container APP com os pacotes basicos 
 ##########################################################################
 
-# Temporario para fix do CVE do openssl
-FROM alpine:edge
+FROM alpine:3.24
 
 LABEL \
     org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"
@@ -19,6 +18,7 @@ ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 # CVE-2006-5201 - nss
 # CVE-2026-49975 - apache2
 # CVE-2026-2100 - p11-kit
+# CVE-2026-63073, CVE-2026-75803 - openssl
 RUN apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
      apache2 \
@@ -26,6 +26,7 @@ RUN apk add --no-cache \
      apache2-http2 \
      apache2-proxy \
      nss \
+     openssl \
      p11-kit p11-kit-trust;
 
 RUN apk add --no-cache \
