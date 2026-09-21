@@ -39,7 +39,7 @@ RUN apk add --no-cache \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/community/ \
       apache2 \
-      1apache2-brotli \
+      apache2-brotli \
       apache2-http2 \
       apache2-proxy \
       php82-bcmath \
