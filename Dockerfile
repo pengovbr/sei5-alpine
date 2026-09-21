@@ -21,17 +21,16 @@ ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 # CVE-2026-63073, CVE-2026-75803 - openssl
 RUN apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
-     apache2 \
-     apache2-brotli \
-     apache2-http2 \
-     apache2-proxy \
      nss \
-     openssl \
      p11-kit p11-kit-trust;
 
 RUN apk add --no-cache \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
       --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/community/ \
+      apache2 \
+      apache2-brotli \
+      apache2-http2 \
+      apache2-proxy \
       php82-bcmath \
       php82-bz2 \
       php82-calendar \
