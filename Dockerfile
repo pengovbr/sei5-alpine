@@ -219,8 +219,11 @@ RUN set -eux; \
 # Para testes funcionais do mod-sei-pen
 #RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ docker
 
-# Alguns testes funcionais de alguns módulos esperam o curl
-RUN apk add --no-cache curl
+# Alguns testes funcionais de alguns módulos esperam o curl e docker
+RUN apk add --no-cache curl ; apk add ca-certificates gnupg ; \
+    curl -fsSL https://download.docker.com/linux/alpine/gpg | apk add - ; \
+    echo "https://download.docker.com/linux/alpine" >> /etc/apk/repositories \
+    apk update; apk add docker;
 
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
