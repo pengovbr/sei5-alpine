@@ -218,6 +218,10 @@ RUN set -eux; \
 
 # Para testes funcionais do mod-sei-pen
 #RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ docker
+
+# Alguns testes funcionais de alguns módulos esperam o curl
+RUN apk add --no-cache curl
+
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/sh", "-c", "crond && php-fpm82 -D && httpd -DFOREGROUND"]
