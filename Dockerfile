@@ -17,8 +17,10 @@ ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 
 # CVE-2006-5201 - nss
 # CVE-2026-2100 - p11-kit
+# CVE-2026-92392 - curl
 RUN apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ \
+     curl \
      nss \
      p11-kit p11-kit-trust;
 
@@ -220,7 +222,7 @@ RUN set -eux; \
 #RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ docker
 
 # Alguns testes funcionais de alguns módulos esperam o curl e docker
-RUN apk add --no-cache curl ; apk add ca-certificates gnupg ; \
+RUN apk add ca-certificates gnupg ; \
     curl -fsSL https://download.docker.com/linux/alpine/gpg | apk add - ; \
     echo "https://download.docker.com/linux/alpine" >> /etc/apk/repositories \
     apk update; apk add docker;
