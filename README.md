@@ -2,7 +2,9 @@
 
 ![Resultados do build](https://github.com/pengovbr/sei5-alpine/actions/workflows/publish.yml/badge.svg)
 
-Imagem docker para SEI 5 no PHP82 no Alpine 3.24 - Versão DEV
+Imagem docker para SEI 5 no php83 no Alpine 3.24 - Versão DEV
+
+O SEI 5 tem suporte oficial no php 8.2 somente. Essas imagens usam 8.3 e portanto não usam a versão correta do PHP.
 
 Essa imagem serve somente para MySQL, MariaDB e Postgres.
 

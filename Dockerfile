@@ -5,7 +5,7 @@
 FROM alpine:3.24
 
 LABEL \
-    org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em PHP82"
+    org.opencontainers.image.title="Imagem docker para SEI 5 Alpine em php83"
 
 # Erro do iconv com musl ASCII//TRANSLIT
 # https://github.com/docker-library/php/issues/1495
@@ -25,72 +25,68 @@ RUN apk add --no-cache \
      p11-kit p11-kit-trust;
 
 RUN apk add --no-cache \
-      --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
-      --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/community/ \
       apache2 \
       apache2-brotli \
       apache2-http2 \
       apache2-proxy \
-      php82-bcmath \
-      php82-bz2 \
-      php82-calendar \
-      php82-ctype \
-      php82-curl \
-      php82-dom \
-      php82-exif \
-      php82-fileinfo \
-      php82-fpm \
-      php82-gd \
-      php82-gettext \
-      php82-gmp \
-      php82-iconv \
-      php82-imap \
-      php82-intl \
-      php82-ldap \
-      php82-mbstring \
-      php82-mysqli \
-      php82-odbc \
-      php82-opcache \
-      php82-openssl \
-      php82-pcntl \
-      php82-pdo \
-      php82-pdo_mysql \
-      php82-pdo_pgsql \
-      php82-pear \
-      php82-pecl-apcu \
-      php82-pecl-igbinary \
-      php82-pecl-mcrypt \
-      php82-pecl-memcache \
-      php82-pecl-xdebug \
-      php82-pgsql \
-      php82-phar \
-      php82-pspell \
-      php82-simplexml \
-      php82-sodium \
-      php82-shmop \
-      php82-soap \
-      php82-xml \
-      php82-zip \
-      php82-zlib \
-      php82-pecl-uploadprogress;
+      php83-bcmath \
+      php83-bz2 \
+      php83-calendar \
+      php83-ctype \
+      php83-curl \
+      php83-dom \
+      php83-exif \
+      php83-fileinfo \
+      php83-fpm \
+      php83-gd \
+      php83-gettext \
+      php83-gmp \
+      php83-iconv \
+      php83-imap \
+      php83-intl \
+      php83-ldap \
+      php83-mbstring \
+      php83-mysqli \
+      php83-odbc \
+      php83-opcache \
+      php83-openssl \
+      php83-pcntl \
+      php83-pdo \
+      php83-pdo_mysql \
+      php83-pdo_pgsql \
+      php83-pear \
+      php83-pecl-apcu \
+      php83-pecl-igbinary \
+      php83-pecl-mcrypt \
+      php83-pecl-memcache \
+      php83-pecl-xdebug \
+      php83-pgsql \
+      php83-phar \
+      php83-pspell \
+      php83-simplexml \
+      php83-sodium \
+      php83-shmop \
+      php83-soap \
+      php83-xml \
+      php83-zip \
+      php83-zlib \
+      php83-pecl-uploadprogress;
 
 # instala suporte para gearman
 RUN apk add --no-cache \
-    --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/main/ \
-    --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/community/ \
     gcc \
     g++ \
     make \
     autoconf \
     libc-dev \
-    php82-dev \
-    php82-tokenizer \
+    php83-dev \
+    php83-tokenizer \
     && apk add --no-cache \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ \
     gearman-libs \
     gearman-dev \
-    && pecl82 install gearman \
-    && echo "extension=gearman.so" > /etc/php82/conf.d/50_gearman.ini \
+    && pecl83 install gearman \
+    && echo "extension=gearman.so" > /etc/php83/conf.d/50_gearman.ini \
     && apk del \
         gearman-dev \
         gcc \
@@ -98,7 +94,7 @@ RUN apk add --no-cache \
         make \
         autoconf \
         libc-dev \
-        php82-dev
+        php83-dev
 
 # Pacotes para o wkhtmltopdf
 RUN apk add --no-cache \
@@ -134,10 +130,10 @@ RUN apk add --no-cache \
       --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/  \
       openjdk8;
 
-COPY assets/sei.ini /etc/php82/conf.d/99_sei.ini
-COPY assets/xdebug.ini /etc/php82/php-fpm.d/99_xdebug.ini
-COPY assets/opcache.ini /etc/php82/conf.d/10_opcache.ini
-COPY assets/xdebug.ini /etc/php82/conf.d/99_xdebug.ini
+COPY assets/sei.ini /etc/php83/conf.d/99_sei.ini
+COPY assets/xdebug.ini /etc/php83/php-fpm.d/99_xdebug.ini
+COPY assets/opcache.ini /etc/php83/conf.d/10_opcache.ini
+COPY assets/xdebug.ini /etc/php83/conf.d/99_xdebug.ini
 COPY assets/sei.conf /etc/apache2/conf.d/
 COPY assets/cache.conf /etc/apache2/conf.d/
 COPY assets/sei_compress.conf /etc/apache2/conf.d/
@@ -153,8 +149,7 @@ RUN apk add --no-cache \
 
 # Suporte para módulo de assinatura avançada
 RUN apk add --no-cache \
-    --repository http://dl-cdn.alpinelinux.org/alpine/v3.22/community/ \
-    php82-tokenizer php82-xmlwriter;
+    php83-tokenizer php83-xmlwriter;
 
 # Geração de audio do captcha
 # RUN apk add --no-cache ffmpeg;
@@ -165,7 +160,7 @@ RUN set -eux; \
     # Permissões e links
     chmod +x /entrypoint.sh; \
     chown apache:apache /entrypoint.sh; \
-    ln -sf /usr/bin/php82 /usr/bin/php; \
+    ln -sf /usr/bin/php83 /usr/bin/php; \
     \
     # Diretórios
     mkdir -p \
@@ -175,7 +170,7 @@ RUN set -eux; \
     \
     chown apache:apache \
         /var/www/logs \
-        /var/log/php82; \
+        /var/log/php83; \
     \
     # Configuração básica do Apache
     # HSTS não configurado por ser HTTP
@@ -210,10 +205,10 @@ RUN set -eux; \
     # PHP
     { \
         echo 'expose_php = Off'; \
-    } >> /etc/php82/php.ini; \
+    } >> /etc/php83/php.ini; \
     \
     # PHP-FPM (apenas para desenvolvimento)
-    echo 'clear_env = no' >> /etc/php82/php-fpm.conf
+    echo 'clear_env = no' >> /etc/php83/php-fpm.conf
 
 # Em DEV vários módulos esperam que esteja no root
 # USER apache
@@ -222,11 +217,11 @@ RUN set -eux; \
 #RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main/ docker
 
 # Alguns testes funcionais de alguns módulos esperam o curl e docker
-RUN apk add ca-certificates gnupg ; \
-    curl -fsSL https://download.docker.com/linux/alpine/gpg | apk add - ; \
-    echo "https://download.docker.com/linux/alpine" >> /etc/apk/repositories \
-    apk update; apk add docker;
+# RUN apk add ca-certificates gnupg ; \
+#     curl -fsSL https://download.docker.com/linux/alpine/gpg | apk add - ; \
+#     echo "https://download.docker.com/linux/alpine" >> /etc/apk/repositories \
+#     apk update; apk add docker;
 
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/bin/sh", "-c", "crond && php-fpm82 -D && httpd -DFOREGROUND"]
+CMD ["/bin/sh", "-c", "crond && php-fpm83 -D && httpd -DFOREGROUND"]
