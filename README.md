@@ -1,3 +1,7 @@
+# Repositório arquivado!
+
+Com o lançamento do SEI 6 esse repositório será arquivado. A última versão da imagem permanecerá disponível mas não será mais atualizada.
+
 # sei5-alpine para DEV
 
 ![Resultados do build](https://github.com/pengovbr/sei5-alpine/actions/workflows/publish.yml/badge.svg)
